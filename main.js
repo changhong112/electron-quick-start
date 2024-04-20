@@ -1,4 +1,12 @@
-const { app, BrowserView, BrowserWindow } = require('electron');
+const { app, BrowserView, BrowserWindow, ipcMain } = require('electron');
+
+ipcMain.on('open-new-window', (event, url) => {
+  const indexWin = new BrowserWindow({
+    width: 400,
+    height: 250
+  })
+  indexWin.loadURL(url)
+})
 
 function createWindow() {
   let mainWin = new BrowserWindow({
@@ -11,7 +19,12 @@ function createWindow() {
     maxHeight: 800,
     minWidth: 400,
     minHeight: 200,
-    autoHideMenuBar: true
+    autoHideMenuBar: true,
+    title: '打开新窗口',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    },
   });
   
   mainWin.loadFile('index-lifecycles.html');
@@ -28,6 +41,8 @@ function createWindow() {
     console.log('8 => this window is closed');
     mainWin = null;
   })
+
+  mainWin.webContents.openDevTools()
 }
 
 app.on('ready', () => {
