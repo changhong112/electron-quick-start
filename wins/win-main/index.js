@@ -7,6 +7,6 @@ window.addEventListener('DOMContentLoaded', () => {
   oBtn.addEventListener('click', () => {
     // 如何创建窗口
     // ipc进程间通信 主进程与渲染进程
-    ipcRenderer.send('open-new-window', './index-win.html')
+    ipcRenderer.send('open-new-window', 'wins/win-index/index.html')
   });
 });

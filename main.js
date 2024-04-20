@@ -5,7 +5,9 @@ ipcMain.on('open-new-window', (event, url) => {
     width: 400,
     height: 250
   })
-  indexWin.loadURL(url)
+  console.log(8, url);
+  // indexWin.loadFile('./wins/win-index/index.html')
+  indexWin.loadFile(url)
 })
 
 function createWindow() {
@@ -27,7 +29,7 @@ function createWindow() {
     },
   });
   
-  mainWin.loadFile('index-lifecycles.html');
+  mainWin.loadFile('wins/win-main/index.html');
   mainWin.on('ready-to-show', () => {
     mainWin.show()
   })
