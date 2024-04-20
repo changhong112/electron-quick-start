@@ -2,12 +2,22 @@ const { app, BrowserView, BrowserWindow } = require('electron');
 
 function createWindow() {
   let mainWin = new BrowserWindow({
+    x: 10,
+    y: 10,
+    show: false,
     width: 600,
-    height: 400
+    height: 400,
+    maxWidth: 1200,
+    maxHeight: 800,
+    minWidth: 400,
+    minHeight: 200,
+    autoHideMenuBar: true
   });
-
+  
   mainWin.loadFile('index-lifecycles.html');
-
+  mainWin.on('ready-to-show', () => {
+    mainWin.show()
+  })
   mainWin.webContents.on('dom-ready', () => {
     console.log('2 => dom-ready');
   })
