@@ -1,43 +1,56 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
-const path = require('node:path')
+const { app, BrowserView, BrowserWindow } = require('electron');
 
-function createWindow () {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+function createWindow() {
+  let mainWin = new BrowserWindow({
+    width: 600,
+    height: 400
+  });
+
+  mainWin.loadFile('index-lifecycles.html');
+
+  mainWin.webContents.on('dom-ready', () => {
+    console.log('2 => dom-ready');
   })
-
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWin.webContents.on('did-finish-load', () => {
+    console.log('3 => did-finish-load');
+  })
+  mainWin.on('close', () => {
+    console.log('8 => this window is closed');
+    mainWin = null;
+  })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.on('ready', () => {
+  console.log('1 => ready');
   createWindow()
-
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+app.on('window-all-closed', () => {
+  console.log('4 => window-all-closed');
+  app.quit()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+app.on('before-quit', () => {
+  console.log('5 => before-quit');
+})
+
+app.on('will-quit', () => {
+  console.log('6 => will-quit');
+})
+
+app.on('quit', () => {
+  console.log('7 => quit');
+})
+
+
+/**
+ * 生命周期顺序
+ *  1 => ready
+    2 => dom-ready
+    3 => did-finish-load
+    8 => this window is closed   
+    4 => window-all-closed       
+    5 => before-quit
+    6 => will-quit
+    7 => quit
+ */
